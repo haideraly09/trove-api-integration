@@ -5,8 +5,10 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 
 // 🔑 STEP 1: Add your Gemini API key here
 // const API_KEY = ''; // Replace with your actual API key
-const API_KEY = process.env.REACT_APP_GEMINI_API_KEY;
-// console.log('API Key:', process.env.REACT_APP_GEMINI_API_KEY);
+
+
+
+const API_KEY = import.meta.env.VITE_REACT_APP_GEMINI_API_KEY;
 
 
 
@@ -299,4 +301,5 @@ export const checkGeminiConnection = async () => {
     console.error('Gemini connection test failed:', error);
     return false;
   }
+
 };
