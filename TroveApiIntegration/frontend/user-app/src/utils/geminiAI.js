@@ -1,36 +1,21 @@
-// 🚀 GEMINI AI INTEGRATION FOR YOUR TROVE PROJECT
-// Add this to your src/utils/ folder as 'geminiAI.js'
+// 🚀 GROQ AI INTEGRATION FOR YOUR TROVE PROJECT
+// Updated to use Groq API via adapter
 
-import { GoogleGenerativeAI } from '@google/generative-ai';
+// STEP 1: Change this import line
+import { GoogleGenerativeAI } from './apiAdapter.js';  // ← CHANGED: Now uses your adapter
 
-// 🔑 STEP 1: Add your Gemini API key here
-// const API_KEY = ''; // Replace with your actual API key
+// STEP 2: Update your environment variable name
+const API_KEY = import.meta.env.VITE_GROQ_API_KEY;  // ← CHANGED: Updated variable name
 
-
-
-const API_KEY = import.meta.env.VITE_REACT_APP_GEMINI_API_KEY;
-
-
-
-// Add these console logs at the top of your geminiAI.js file
-// console.log('All env variables:', process.env);
-// console.log('Gemini API Key:', process.env.REACT_APP_GEMINI_API_KEY);
-// console.log('API Key exists:', !!process.env.REACT_APP_GEMINI_API_KEY);
-
-// const API_KEY = process.env.REACT_APP_GEMINI_API_KEY;
-// console.log('API Key loaded:', API_KEY ? 'YES' : 'NO');
-
-
-
-
-
-
+// Debug logging (optional)
+console.log('Groq API Key loaded:', API_KEY ? 'YES' : 'NO');
+console.log('API Key preview:', API_KEY ? `${API_KEY.slice(0, 8)}...` : 'None');
 
 const genAI = new GoogleGenerativeAI(API_KEY);
 
-// Initialize the model
+// Initialize the model - UPDATED for Groq
 const model = genAI.getGenerativeModel({ 
-  model: "gemini-1.5-flash",  // Fast and free tier
+  model: "llama-3.1-70b-versatile",  // ← CHANGED: Groq model instead of Gemini
   generationConfig: {
     temperature: 0.7,
     topK: 40,
@@ -77,7 +62,7 @@ Enhanced query:`;
     
     return enhancedQuery;
   } catch (error) {
-    console.error('Gemini API Error:', error);
+    console.error('Groq API Error:', error);
     // Fallback enhancement
     return `${originalQuery} Australian historical context colonial period archives records`;
   }
@@ -128,7 +113,7 @@ HISTORICAL SIGNIFICANCE: [why this matters in Australian history]
       timestamp: new Date().toISOString()
     }];
   } catch (error) {
-    console.error('Gemini Summarization Error:', error);
+    console.error('Groq Summarization Error:', error);
     return [{
       type: 'summary',
       content: 'AI summarization temporarily unavailable. Please review the search results manually.',
@@ -194,7 +179,7 @@ Only include categories that actually appear in the results. Maximum 8 categorie
       {"category": "Historical Records", "count": searchResults.length, "description": "Australian historical documents"}
     ];
   } catch (error) {
-    console.error('Gemini Categorization Error:', error);
+    console.error('Groq Categorization Error:', error);
     return [
       {"category": "Historical Records", "count": searchResults.length, "description": "Australian historical documents"}
     ];
@@ -245,7 +230,7 @@ Maximum 8 explanations.
       timestamp: new Date().toISOString()
     }];
   } catch (error) {
-    console.error('Gemini Translation Error:', error);
+    console.error('Groq Translation Error:', error);
     return [{
       type: 'translation',
       content: 'Historical language assistance temporarily unavailable.',
@@ -286,20 +271,19 @@ Suggestions for "${partialQuery}":`;
     
     return suggestions.slice(0, 5); // Limit to 5 suggestions
   } catch (error) {
-    console.error('Gemini Suggestions Error:', error);
+    console.error('Groq Suggestions Error:', error);
     return [];
   }
 };
 
 // 🔧 Utility function to check API key
-export const checkGeminiConnection = async () => {
+export const checkGroqConnection = async () => {  // ← CHANGED: Renamed function
   try {
     const result = await model.generateContent("Test connection. Respond with 'Connected'");
     const response = await result.response;
     return response.text().includes('Connected');
   } catch (error) {
-    console.error('Gemini connection test failed:', error);
+    console.error('Groq connection test failed:', error);  // ← CHANGED: Updated error message
     return false;
   }
-
 };
