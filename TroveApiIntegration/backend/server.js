@@ -379,16 +379,22 @@ app.use((error, req, res, next) => {
 });
 
 // Start server
-app.listen(PORT, () => {
-    console.log(`\n🚀 Server running on http://localhost:${PORT}`);
-    console.log(`📋 Test server: http://localhost:${PORT}`);
-    console.log(`🔑 Test API key: http://localhost:${PORT}/api/test-key`);
-    console.log(`🔍 Search endpoint: http://localhost:${PORT}/api/trove`);
-    console.log(`🆕 Now using Trove API v3 with 'category' instead of 'zone'\n`);
-    
-    if (!TROVE_API_KEY) {
-        console.log('⚠️  WARNING: TROVE_API_KEY not found in .env file!');
-    } else {
-        console.log('✅ API key loaded successfully');
-    }
-});
+// Export for Vercel
+module.exports = app;
+
+// Only start server when running locally
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`\n🚀 Server running on http://localhost:${PORT}`);
+        console.log(`📋 Test server: http://localhost:${PORT}`);
+        console.log(`🔑 Test API key: http://localhost:${PORT}/api/test-key`);
+        console.log(`🔍 Search endpoint: http://localhost:${PORT}/api/trove`);
+        console.log(`🆕 Now using Trove API v3 with 'category' instead of 'zone'\n`);
+        
+        if (!TROVE_API_KEY) {
+            console.log('⚠️  WARNING: TROVE_API_KEY not found in .env file!');
+        } else {
+            console.log('✅ API key loaded successfully');
+        }
+    });
+}
