@@ -1,6 +1,9 @@
 import { useState, useCallback } from 'react';
 
-const API_BASE_URL = 'http://localhost:8080';
+// const API_BASE_URL = 'http://localhost:8080';
+const API_BASE_URL = import.meta.env.PROD 
+  ? 'https://trove-search-api.vercel.app' 
+  : 'http://localhost:8080';
 
 export const useApi = () => {
   const [loading, setLoading] = useState(false);
@@ -259,5 +262,6 @@ export const usePreferences = () => {
     resetPreferences
   };
 };
+
 
 export default useApi;
