@@ -1,13 +1,13 @@
 // 🚀 FIXED HEADER - Simple Search with AI Connected Issue Resolved
 import React, { useState, useEffect } from 'react';
 import { Search, Database, Info, Brain, FileText, Tag, Languages, Sparkles, ChevronDown, ChevronUp, Loader, Zap, Bot, Star, AlertCircle } from 'lucide-react';
-import { 
-  enhanceSearchQuery, 
-  summarizeResults, 
-  categorizeResults, 
-  translateHistoricalLanguage,
-  getSmartSuggestions,
-  checkGeminiConnection 
+import {    
+    enhanceSearchQuery,    
+    summarizeResults,    
+    categorizeResults,    
+    translateHistoricalLanguage,   
+    getSmartSuggestions,   
+    checkGroqConnection  // ← Changed to checkGroqConnection
 } from '../utils/geminiAI';
 
 const Header = ({ onSearch, isSearching, searchQuery, setSearchQuery, searchResults = [] }) => {
@@ -555,5 +555,6 @@ const Header = ({ onSearch, isSearching, searchQuery, setSearchQuery, searchResu
     </header>
   );
 };
+
 
 export default Header;
