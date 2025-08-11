@@ -1,10 +1,19 @@
-// Groq API Adapter - Makes Groq work with existing Gemini code
-// Save this file as: src/utils/apiAdapter.js
 
+// Enhanced version of your apiAdapter.js
 export class GoogleGenerativeAI {
   constructor(apiKey) {
     this.apiKey = apiKey;
     this.baseURL = 'https://api.groq.com/openai/v1';
+    
+    // Validate API key format
+    if (!apiKey) {
+      throw new Error('Groq API key is required');
+    }
+    if (!apiKey.startsWith('gsk_')) {
+      throw new Error('Invalid Groq API key format. Should start with "gsk_"');
+    }
+    
+    console.log('🔑 Groq API initialized with key:', `${apiKey.substring(0, 10)}...`);
   }
 
   getGenerativeModel(config) {
@@ -15,12 +24,30 @@ export class GoogleGenerativeAI {
 class GroqModel {
   constructor(apiKey, config) {
     this.apiKey = apiKey;
-    this.model = config.model || 'llama-3.1-70b-versatile'; // Default Groq model
+    // Fix: Use valid Groq model names
+    this.model = this.mapToGroqModel(config.model);
+    this.config = config;
+    
+    console.log('🤖 Using Groq model:', this.model);
+  }
+
+  // Map Gemini-style model names to Groq models
+  mapToGroqModel(modelName) {
+    const modelMap = {
+      'llama-3.1-70b-versatile': 'llama3-70b-8192',
+      'llama-3.1-8b-instant': 'llama3-8b-8192',
+      'gemini-pro': 'llama3-70b-8192', // Default fallback
+    };
+    
+    return modelMap[modelName] || 'llama3-8b-8192'; // Default to fast model
   }
 
   async generateContent(prompt) {
     try {
-      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      console.log('🚀 Making request to api.groq.com');
+      console.log('📝 Prompt length:', typeof prompt === 'string' ? prompt.length : JSON.stringify(prompt).length);
+      
+      const response = await fetch(`${this.baseURL || 'https://api.groq.com/openai/v1'}/chat/completions`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${this.apiKey}`,
@@ -34,17 +61,29 @@ class GroqModel {
               content: typeof prompt === 'string' ? prompt : prompt.text || JSON.stringify(prompt)
             }
           ],
-          max_tokens: 1500,
-          temperature: 0.7
+          max_tokens: this.config?.generationConfig?.maxOutputTokens || 1500,
+          temperature: this.config?.generationConfig?.temperature || 0.7
         })
       });
 
+      console.log('📡 Response status:', response.status);
+
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(`Groq API error: ${response.status} ${response.statusText} - ${errorText}`);
+        console.error('❌ Groq API Error Details:', errorText);
+        
+        // Provide specific error messages
+        if (response.status === 401) {
+          throw new Error('Invalid Groq API key. Please check your VITE_GROQ_API_KEY environment variable.');
+        } else if (response.status === 429) {
+          throw new Error('Groq API rate limit exceeded. Please try again in a moment.');
+        } else {
+          throw new Error(`Groq API error: ${response.status} ${response.statusText} - ${errorText}`);
+        }
       }
 
       const data = await response.json();
+      console.log('✅ Groq API Response received successfully');
       
       // Return in Gemini-compatible format
       return {
@@ -53,12 +92,11 @@ class GroqModel {
         }
       };
     } catch (error) {
-      console.error('Groq API Error:', error);
+      console.error('❌ Groq API Error:', error);
       throw error;
     }
   }
 
-  // Alternative method name that some Gemini code might use
   async generateContentStream(prompt) {
     return this.generateContent(prompt);
   }
