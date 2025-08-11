@@ -31,13 +31,13 @@ const Header = ({ onSearch, isSearching, searchQuery, setSearchQuery, searchResu
 
   // Check Gemini connection on mount
   useEffect(() => {
-    checkGroqConnection().then(setGeminiConnected);
+    checkGroqConnection().then(setGrokConnected);
   }, []);
 
   // Get real AI suggestions as user types
   useEffect(() => {
     const getSuggestions = async () => {
-      if (searchQuery.length > 2 && geminiConnected) {
+      if (searchQuery.length > 2 && grokConnected) {
         try {
           const suggestions = await getSmartSuggestions(searchQuery);
           setAiSuggestions(suggestions);
@@ -52,7 +52,7 @@ const Header = ({ onSearch, isSearching, searchQuery, setSearchQuery, searchResu
 
     const timeoutId = setTimeout(getSuggestions, 300); // Debounce API calls
     return () => clearTimeout(timeoutId);
-  }, [searchQuery, geminiConnected]);
+  }, [searchQuery, grokConnected]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -60,7 +60,7 @@ const Header = ({ onSearch, isSearching, searchQuery, setSearchQuery, searchResu
       setOriginalQuery(searchQuery.trim());
       
       // If AI query enhancement is enabled and Gemini is connected
-      if (aiEnabled.enhanceQuery && geminiConnected) {
+      if (aiEnabled.enhanceQuery && grokConnected) {
         try {
           setAiFeatures(prev => ({ ...prev, queryEnhancement: true }));
           const enhanced = await enhanceSearchQuery(searchQuery.trim());
@@ -114,7 +114,7 @@ const Header = ({ onSearch, isSearching, searchQuery, setSearchQuery, searchResu
 
   // AI Feature: Smart Summarization
   const handleAISummarization = async () => {
-    if (!geminiConnected) {
+    if (!grokConnected) {
       alert('AI features require Gemini API connection');
       return;
     }
@@ -142,7 +142,7 @@ const Header = ({ onSearch, isSearching, searchQuery, setSearchQuery, searchResu
 
   // AI Feature: Smart Categorization
   const handleAICategorization = async () => {
-    if (!geminiConnected) {
+    if (!grokConnected) {
       alert('AI features require Gemini API connection');
       return;
     }
@@ -170,7 +170,7 @@ const Header = ({ onSearch, isSearching, searchQuery, setSearchQuery, searchResu
 
   // AI Feature: Historical Language Help
   const handleAITranslation = async () => {
-    if (!geminiConnected) {
+    if (!grokConnected) {
       alert('AI features require Gemini API connection');
       return;
     }
@@ -242,39 +242,39 @@ const Header = ({ onSearch, isSearching, searchQuery, setSearchQuery, searchResu
           {/* AI Status Banner - responsive text */}
           <div className="max-w-full sm:max-w-2xl mx-auto mb-3 sm:mb-4">
             <div className={`backdrop-blur-sm border rounded-lg p-2 sm:p-3 ${
-              geminiConnected === true 
+              grokConnected === true 
                 ? 'bg-gradient-to-r from-green-500/20 to-emerald-500/20 border-green-300/30'
-                : geminiConnected === false
+                : grokConnected === false
                   ? 'bg-gradient-to-r from-red-500/20 to-orange-500/20 border-red-300/30'
                   : 'bg-gradient-to-r from-purple-500/20 to-pink-500/20 border-purple-300/30'
             }`}>
               <div className="flex items-center justify-center text-center">
-                <Bot className={`h-4 w-4 sm:h-5 sm:w-5 mr-2 flex-shrink-0 ${geminiConnected ? 'animate-bounce text-green-300' : 'text-red-300'}`} />
+                <Bot className={`h-4 w-4 sm:h-5 sm:w-5 mr-2 flex-shrink-0 ${grokConnected ? 'animate-bounce text-green-300' : 'text-red-300'}`} />
                 <span className={`text-xs sm:text-sm font-medium ${
-                  geminiConnected === true 
+                  grokConnected === true 
                     ? 'text-green-200' 
-                    : geminiConnected === false 
+                    : grokConnected === false 
                       ? 'text-red-200'
                       : 'text-purple-200'
                 }`}>
                   <span className="hidden sm:inline">
-                    {geminiConnected === true 
+                    {grokConnected === true 
                       ? '🚀 Gemini AI Connected • Enhanced Historical Search • Smart Suggestions Active'
-                      : geminiConnected === false
+                      : grokConnected === false
                         ? '⚠️ AI Offline • Check API Key • Basic Search Available'
                         : '🔄 Connecting to Gemini AI...'
                     }
                   </span>
                   <span className="sm:hidden">
-                    {geminiConnected === true 
+                    {grokConnected === true 
                       ? '🚀 AI Active'
-                      : geminiConnected === false
+                      : grokConnected === false
                         ? '⚠️ AI Offline'
                         : '🔄 Connecting...'
                     }
                   </span>
                 </span>
-                <Sparkles className={`h-4 w-4 sm:h-5 sm:w-5 ml-2 flex-shrink-0 ${geminiConnected ? 'animate-pulse text-green-300' : 'text-red-300'}`} />
+                <Sparkles className={`h-4 w-4 sm:h-5 sm:w-5 ml-2 flex-shrink-0 ${grokConnected ? 'animate-pulse text-green-300' : 'text-red-300'}`} />
               </div>
             </div>
           </div>
@@ -286,7 +286,7 @@ const Header = ({ onSearch, isSearching, searchQuery, setSearchQuery, searchResu
               <div className="mb-3 sm:mb-4 p-3 sm:p-4 bg-gradient-to-r from-green-500/20 to-blue-500/20 backdrop-blur-sm rounded-lg border border-green-300/50">
                 <div className="flex items-center mb-2">
                   <Brain className="h-4 w-4 sm:h-5 sm:w-5 text-green-300 mr-2 animate-pulse flex-shrink-0" />
-                  <span className="text-xs sm:text-sm font-bold text-green-200">🎯 Gemini AI Enhanced:</span>
+                  <span className="text-xs sm:text-sm font-bold text-green-200">🎯 Grok AI Enhanced:</span>
                 </div>
                 <div className="space-y-2 text-xs sm:text-sm">
                   <div className="text-gray-300">
@@ -311,7 +311,7 @@ const Header = ({ onSearch, isSearching, searchQuery, setSearchQuery, searchResu
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder={geminiConnected 
+                placeholder={grokConnected 
                   ? "🤖 Ask about Australian history..." 
                   : "🔍 Search historical records..."
                 }
@@ -334,7 +334,7 @@ const Header = ({ onSearch, isSearching, searchQuery, setSearchQuery, searchResu
                 <div className="p-2 border-b bg-green-50 sticky top-0">
                   <div className="flex items-center text-xs text-green-700 font-medium">
                     <Bot className="h-3 w-3 mr-1 animate-bounce" />
-                    <span className="hidden sm:inline">Gemini AI Suggestions</span>
+                    <span className="hidden sm:inline">Grok AI Suggestions</span>
                     <span className="sm:hidden">AI Suggestions</span>
                   </div>
                 </div>
@@ -356,13 +356,13 @@ const Header = ({ onSearch, isSearching, searchQuery, setSearchQuery, searchResu
             {/* AI Toggle Options - responsive grid */}
             <div className="mt-3 sm:mt-4 p-3 sm:p-4 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20">
               <div className="flex items-center justify-center mb-2 sm:mb-3">
-                <Bot className={`h-3 w-3 sm:h-4 sm:w-4 mr-2 ${geminiConnected ? 'text-green-300' : 'text-red-300'}`} />
+                <Bot className={`h-3 w-3 sm:h-4 sm:w-4 mr-2 ${grokConnected ? 'text-green-300' : 'text-red-300'}`} />
                 <span className="text-white text-xs sm:text-sm font-medium">
                   <span className="hidden sm:inline">
-                    {geminiConnected ? 'Gemini AI Features' : 'AI Features (Offline)'}
+                    {grokConnected ? 'Gemini AI Features' : 'AI Features (Offline)'}
                   </span>
                   <span className="sm:hidden">
-                    {geminiConnected ? 'AI Features' : 'AI (Offline)'}
+                    {grokConnected ? 'AI Features' : 'AI (Offline)'}
                   </span>
                 </span>
               </div>
@@ -386,7 +386,7 @@ const Header = ({ onSearch, isSearching, searchQuery, setSearchQuery, searchResu
                     checked={aiEnabled.autoSummarize}
                     onChange={(e) => setAiEnabled(prev => ({ ...prev, autoSummarize: e.target.checked }))}
                     className="mr-1 sm:mr-2 rounded accent-blue-500 w-3 h-3 sm:w-4 sm:h-4"
-                    disabled={!geminiConnected}
+                    disabled={!grokConnected}
                   />
                   <FileText className="h-3 w-3 mr-1 flex-shrink-0" />
                   <span className="hidden sm:inline">Auto-Summarize</span>
@@ -399,7 +399,7 @@ const Header = ({ onSearch, isSearching, searchQuery, setSearchQuery, searchResu
                     checked={aiEnabled.autoCategorize}
                     onChange={(e) => setAiEnabled(prev => ({ ...prev, autoCategorize: e.target.checked }))}
                     className="mr-1 sm:mr-2 rounded accent-green-500 w-3 h-3 sm:w-4 sm:h-4"
-                    disabled={!geminiConnected}
+                    disabled={!grokConnected}
                   />
                   <Tag className="h-3 w-3 mr-1 flex-shrink-0" />
                   <span className="hidden sm:inline">Categorize</span>
@@ -412,7 +412,7 @@ const Header = ({ onSearch, isSearching, searchQuery, setSearchQuery, searchResu
                     checked={aiEnabled.languageHelp}
                     onChange={(e) => setAiEnabled(prev => ({ ...prev, languageHelp: e.target.checked }))}
                     className="mr-1 sm:mr-2 rounded accent-orange-500 w-3 h-3 sm:w-4 sm:h-4"
-                    disabled={!geminiConnected}
+                    disabled={!grokConnected}
                   />
                   <Languages className="h-3 w-3 mr-1 flex-shrink-0" />
                   <span className="hidden sm:inline">Language Help</span>
@@ -436,17 +436,17 @@ const Header = ({ onSearch, isSearching, searchQuery, setSearchQuery, searchResu
               ) : aiFeatures.queryEnhancement ? (
                 <>
                   <Brain className="h-4 w-4 sm:h-5 sm:w-5 mr-2 animate-pulse" />
-                  <span className="hidden sm:inline">🤖 Gemini AI Processing...</span>
+                  <span className="hidden sm:inline">🤖 Grok AI Processing...</span>
                   <span className="sm:hidden">🤖 Processing...</span>
                 </>
               ) : (
                 <>
                   <Zap className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                   <span className="hidden sm:inline">
-                    {geminiConnected ? '🚀 Search with AI Power' : '🔍 Search Trove'}
+                    {grokConnected ? '🚀 Search with AI Power' : '🔍 Search Trove'}
                   </span>
                   <span className="sm:hidden">
-                    {geminiConnected ? '🚀 AI Search' : '🔍 Search'}
+                    {grokConnected ? '🚀 AI Search' : '🔍 Search'}
                   </span>
                 </>
               )}
@@ -457,16 +457,16 @@ const Header = ({ onSearch, isSearching, searchQuery, setSearchQuery, searchResu
               <div className="mt-3 sm:mt-4">
                 <button
                   onClick={() => setShowAIFeatures(!showAIFeatures)}
-                  disabled={!geminiConnected}
+                  disabled={!grokConnected}
                   className={`w-full backdrop-blur-sm text-white py-2.5 sm:py-3 px-3 sm:px-4 rounded-lg transition-all duration-200 flex items-center justify-center border text-sm sm:text-base ${
-                    geminiConnected 
+                    grokConnected 
                       ? 'bg-gradient-to-r from-green-500/20 to-blue-500/20 hover:from-green-500/30 hover:to-blue-500/30 border-green-300/30'
                       : 'bg-gradient-to-r from-gray-500/20 to-gray-600/20 border-gray-400/30 opacity-50 cursor-not-allowed'
                   }`}
                 >
-                  <Bot className={`h-4 w-4 sm:h-5 sm:w-5 mr-2 ${geminiConnected ? 'animate-bounce' : ''}`} />
-                  <span className="hidden sm:inline">🤖 {geminiConnected ? 'AI Result Processing Tools' : 'AI Tools (Offline)'}</span>
-                  <span className="sm:hidden">🤖 {geminiConnected ? 'AI Tools' : 'AI (Off)'}</span>
+                  <Bot className={`h-4 w-4 sm:h-5 sm:w-5 mr-2 ${grokConnected ? 'animate-bounce' : ''}`} />
+                  <span className="hidden sm:inline">🤖 {grokConnected ? 'AI Result Processing Tools' : 'AI Tools (Offline)'}</span>
+                  <span className="sm:hidden">🤖 {grokConnected ? 'AI Tools' : 'AI (Off)'}</span>
                   {showAIFeatures ? (
                     <ChevronUp className="h-3 w-3 sm:h-4 sm:w-4 ml-2" />
                   ) : (
@@ -474,7 +474,7 @@ const Header = ({ onSearch, isSearching, searchQuery, setSearchQuery, searchResu
                   )}
                 </button>
 
-                {showAIFeatures && geminiConnected && (
+                {showAIFeatures && grokConnected && (
                   <div className="mt-3 bg-gradient-to-r from-gray-900/50 to-blue-900/50 backdrop-blur-sm rounded-lg p-3 sm:p-4 border border-blue-300/30">
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
                       <button
@@ -521,8 +521,8 @@ const Header = ({ onSearch, isSearching, searchQuery, setSearchQuery, searchResu
                     </div>
 
                     <div className="mt-3 text-center text-xs text-blue-200">
-                      <span className="hidden sm:inline">⚡ Powered by Gemini AI • Process your search results with advanced assistance</span>
-                      <span className="sm:hidden">⚡ Powered by Gemini AI</span>
+                      <span className="hidden sm:inline">⚡ Powered by Grok AI • Process your search results with advanced assistance</span>
+                      <span className="sm:hidden">⚡ Powered by Grok AI</span>
                     </div>
                   </div>
                 )}
@@ -536,13 +536,13 @@ const Header = ({ onSearch, isSearching, searchQuery, setSearchQuery, searchResu
               <Info className="h-3 w-3 sm:h-4 sm:w-4 mr-2 flex-shrink-0" />
               <span className="break-words">
                 <span className="hidden sm:inline">
-                  {geminiConnected 
+                  {grokConnected 
                     ? '🤖 AI-powered search of millions of Australian historical records'
                     : '📚 Search millions of Australian historical records'
                   }
                 </span>
                 <span className="sm:hidden">
-                  {geminiConnected 
+                  {grokConnected 
                     ? '🤖 AI-powered historical search'
                     : '📚 Historical records search'
                   }
@@ -558,4 +558,5 @@ const Header = ({ onSearch, isSearching, searchQuery, setSearchQuery, searchResu
 
 
 export default Header;
+
 
