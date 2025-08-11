@@ -31,7 +31,7 @@ const Header = ({ onSearch, isSearching, searchQuery, setSearchQuery, searchResu
 
   // Check Gemini connection on mount
   useEffect(() => {
-    checkGeminiConnection().then(setGeminiConnected);
+    checkGroqConnection().then(setGeminiConnected);
   }, []);
 
   // Get real AI suggestions as user types
@@ -558,3 +558,4 @@ const Header = ({ onSearch, isSearching, searchQuery, setSearchQuery, searchResu
 
 
 export default Header;
+
