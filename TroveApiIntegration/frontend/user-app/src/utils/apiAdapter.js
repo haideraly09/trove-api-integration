@@ -1,5 +1,3 @@
-
-// Enhanced version of your apiAdapter.js
 export class GoogleGenerativeAI {
   constructor(apiKey) {
     this.apiKey = apiKey;
@@ -31,15 +29,25 @@ class GroqModel {
     console.log('🤖 Using Groq model:', this.model);
   }
 
-  // Map Gemini-style model names to Groq models
+  // Map old/decommissioned model names to current Groq models (September 2025)
   mapToGroqModel(modelName) {
     const modelMap = {
-      'llama-3.1-70b-versatile': 'llama3-70b-8192',
-      'llama-3.1-8b-instant': 'llama3-8b-8192',
-      'gemini-pro': 'llama3-70b-8192', // Default fallback
+      // Map old decommissioned models to new working ones
+      'llama3-70b-8192': 'llama-3.3-70b-versatile',
+      'llama3-8b-8192': 'llama-3.1-8b-instant',
+      'llama-3.1-70b-versatile': 'llama-3.3-70b-versatile', // Old 3.1 → New 3.3
+      'gemini-pro': 'llama-3.3-70b-versatile', // Fallback for Gemini requests
+      
+      // Current working models (as of Sep 2025)
+      'llama-3.3-70b-versatile': 'llama-3.3-70b-versatile',
+      'llama-3.1-8b-instant': 'llama-3.1-8b-instant',
+      'gemma2-9b-it': 'gemma2-9b-it',
+      'qwen/qwen3-32b': 'qwen/qwen3-32b',
+      'moonshotai/kimi-k2-instruct': 'moonshotai/kimi-k2-instruct',
     };
     
-    return modelMap[modelName] || 'llama3-8b-8192'; // Default to fast model
+    // Return mapped model or default to reliable working model
+    return modelMap[modelName] || 'llama-3.1-8b-instant';
   }
 
   async generateContent(prompt) {
